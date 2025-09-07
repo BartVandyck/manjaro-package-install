@@ -78,9 +78,9 @@ check_aur_helper() {
         echo "paru"
     else
         log "No AUR helper found"
-        read -p "Would you like to install 'yay' automatically? (y/n): " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo -n "Would you like to install 'yay' automatically? (y/n): "
+        read -r reply
+        if [[ $reply =~ ^[Yy]$ ]]; then
             install_aur_helper "$dry_run"
             echo "yay"
         else
