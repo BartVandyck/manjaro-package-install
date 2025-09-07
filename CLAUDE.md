@@ -55,6 +55,6 @@ pacman -Qi package-name
 
 ### Post Development
 After each push commands I want you to also copy all files to this location 
- "C:\Users\Bart\OneDrive - Capri-Technology BVBA\Scripts\linuxInstall"
+ "C:\Users\Bart\OneDrive - Capri-Technology BVBA\Scripts\linuxInstall\manjaro-install"
 
  You only have to do this when run on the windows machine "LEGION"
