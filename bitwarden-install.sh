@@ -36,13 +36,56 @@ error() {
     exit 1
 }
 
+install_aur_helper() {
+    local dry_run=${1:-false}
+    
+    log "No AUR helper found. Installing 'yay'..."
+    if [[ "$dry_run" == "true" ]]; then
+        log "[DRY RUN] Would install yay AUR helper"
+        return 0
+    fi
+    
+    # Check if git is installed
+    if ! command -v git >/dev/null 2>&1; then
+        log "Installing git (required for AUR helper)..."
+        sudo pacman -S --noconfirm git
+    fi
+    
+    # Check if base-devel is installed
+    if ! pacman -Qi base-devel >/dev/null 2>&1; then
+        log "Installing base-devel (required for AUR helper)..."
+        sudo pacman -S --noconfirm base-devel
+    fi
+    
+    # Install yay
+    local temp_dir=$(mktemp -d)
+    cd "$temp_dir"
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si --noconfirm
+    cd /
+    rm -rf "$temp_dir"
+    
+    log "yay installed successfully"
+}
+
 check_aur_helper() {
+    local dry_run=${1:-false}
+    
     if command -v yay >/dev/null 2>&1; then
         echo "yay"
     elif command -v paru >/dev/null 2>&1; then
         echo "paru"
     else
-        error "No AUR helper found. Please install 'yay' or 'paru' first."
+        log "No AUR helper found"
+        read -p "Would you like to install 'yay' automatically? (y/n): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            install_aur_helper "$dry_run"
+            echo "yay"
+        else
+            error "AUR helper is required. Please install 'yay' or 'paru' manually and try again."
+        fi
     fi
 }
 
@@ -134,7 +177,7 @@ main() {
     log "Starting Bitwarden installation/update check..."
     
     local aur_helper
-    aur_helper=$(check_aur_helper)
+    aur_helper=$(check_aur_helper "$dry_run")
     log "Using AUR helper: $aur_helper"
     
     if is_package_installed; then
