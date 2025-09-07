@@ -52,3 +52,9 @@ paru -S package-name
 # Check if package is installed
 pacman -Qi package-name
 ```
+
+### Post Development
+After each push commands I want you to also copy all files to this location 
+ "C:\Users\Bart\OneDrive - Capri-Technology BVBA\Scripts\linuxInstall"
+
+ You only have to do this when run on the windows machine "LEGION"
